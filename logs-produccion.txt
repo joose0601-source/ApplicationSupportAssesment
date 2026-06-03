@@ -1,0 +1,37 @@
+============================================================================
+ LOG DE PRODUCCIÓN — MercadoVerde.Api  (extracto del 02/06/2026)
+ Zona del servidor de aplicación: America/El_Salvador (UTC-6)
+============================================================================
+
+2026-06-02 09:14:21.882 INFO  [PedidosController] POST /api/pedidos cliente=1 lineas=1
+2026-06-02 09:14:21.961 INFO  [PasarelaPagoService] Cobro aprobado ref=8f1c... monto=56.39
+2026-06-02 09:14:22.004 INFO  [PedidosController] Pedido 1041 creado estado=Pagado
+
+2026-06-02 09:31:07.220 INFO  [PedidosController] POST /api/pedidos cliente=2 lineas=2
+2026-06-02 09:31:07.244 ERROR [PedidosController] Unhandled exception
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at MercadoVerde.Api.Services.PedidoService.GenerarLineaComprobante(Pedido pedido)
+   at MercadoVerde.Api.Controllers.PedidosController.Crear(CrearPedidoDto dto)
+HTTP 500 devuelto al cliente. Duración: 41 ms
+
+2026-06-02 10:02:55.530 INFO  [PedidosController] POST /api/pedidos cliente=1 cupon=PROMO50 lineas=1
+2026-06-02 10:02:55.531 ERROR [PedidosController] Unhandled exception
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at MercadoVerde.Api.Services.PedidoService.CrearPedido(CrearPedidoDto dto) line 64
+HTTP 500 devuelto al cliente.
+
+2026-06-02 11:48:13.119 INFO  [PedidosController] POST /api/pedidos cliente=1 lineas=1 producto=4(Monitor)
+2026-06-02 11:48:13.140 INFO  [PedidosController] Pedido 1102 creado estado=Pagado
+2026-06-02 11:48:13.142 INFO  [PedidosController] POST /api/pedidos cliente=2 lineas=1 producto=4(Monitor)
+2026-06-02 11:48:13.151 INFO  [PedidosController] Pedido 1103 creado estado=Pagado
+2026-06-02 11:48:13.160 WARN  [Inventario] Producto 4 (Monitor 24") Stock resultante = -1
+
+2026-06-02 12:20:44.700 INFO  [ReportesController] GET /api/reportes/ventas desde=2026-01-01 hasta=2026-06-02
+2026-06-02 12:21:39.512 WARN  [ReportesController] Respuesta enviada. Duración: 54.812 s  (timeout cliente=30s)
+
+2026-06-02 13:05:10.331 INFO  [PedidosController] POST /api/pedidos cliente=1 lineas=1
+2026-06-02 13:05:15.902 INFO  [PedidosController] Pedido 1190 creado estado=Pagado
+2026-06-02 13:05:15.903 WARN  [Conciliacion] Pedido 1190 marcado Pagado pero la pasarela no devolvió referencia.
+
+(*) Cupón PROMO50: campaña de marketing lanzada hoy. Marketing reporta que "varios
+    clientes dicen que el cupón no aplica nada de descuento aunque no marca error".

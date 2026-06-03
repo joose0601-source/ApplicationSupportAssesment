@@ -1,0 +1,12 @@
+# Build
+bin/
+obj/
+# Base de datos local generada al ejecutar
+*.db
+*.db-shm
+*.db-wal
+# IDE
+.vs/
+.vscode/
+.idea/
+*.user
