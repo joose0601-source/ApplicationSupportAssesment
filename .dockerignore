@@ -1,0 +1,18 @@
+# Artefactos de build .NET
+**/bin/
+**/obj/
+# Frontend
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+# Git / IDE
+.git/
+.vs/
+.vscode/
+.idea/
+# Base de datos local antigua (SQLite), por si quedó algún archivo
+*.db
+*.db-shm
+*.db-wal
+# Documentación interna
+SOLUCION-INTERNA.md

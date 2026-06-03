@@ -10,3 +10,9 @@ obj/
 .vscode/
 .idea/
 *.user
+# Frontend (Next.js)
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+# Clave de evaluación interna — NO se entrega al candidato
+SOLUCION-INTERNA.md
