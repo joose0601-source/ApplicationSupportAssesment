@@ -102,8 +102,8 @@ public class PedidoService
         }
         catch
         {
-            // El cobro falló por indisponibilidad del proveedor.
-            pedido.Estado = EstadoPedido.Pagado;
+            // Si la pasarela falla, no confirmo el pago.
+            pedido.Estado = EstadoPedido.Rechazado;
         }
 
         // 5) Descontar inventario

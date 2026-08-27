@@ -166,3 +166,15 @@ Escalamiento: Backend / frontend.
 **Resultado final:** El reporte mantiene la información correcta y reduce las consultas innecesarias.
 **Estado:** Resuelto y validado.
 
+## TICK-205 — Pedido marcado como Pagado cuando falla la pasarela
+
+**Síntoma:** Un pedido podía quedar `Pagado` cuando la pasarela de pago fallaba.
+**Evidencia:** El test mostró que una excepción de la pasarela dejaba `EstadoPedido.Pagado`.
+**Causa raíz:** El `catch` trataba un fallo técnico como un pago aprobado.
+**Corrección:** Se cambió el manejo del `catch` para dejar el pedido en `Rechazado`.
+**Prueba:** Se activó `TICK205_CobroQueFalla_NoDejaPedidoPagado`.
+**Resultado inicial:** El test falló con `EstadoPedido.Pagado`.
+**Resultado final:** `Superado: 4`, `Con error: 0`, `Omitido: 1`.
+**Comportamiento esperado:** Un fallo de la pasarela nunca debe marcar el pedido como `Pagado`.
+**Regresión:** Los tests de TICK-202 y TICK-203 continúan pasando.
+**Estado:** Resuelto y validado.
