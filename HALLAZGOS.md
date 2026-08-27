@@ -268,3 +268,13 @@ Escalamiento: Backend / frontend.
 **Comportamiento esperado:** El panel debe esperar brevemente después de que el usuario deje de escribir y mostrar únicamente los resultados correspondientes al término actual.
 **Regresión:** El buscador continúa mostrando correctamente los productos encontrados y conserva la búsqueda manual mediante Enter o botón.
 **Estado:** Resuelto y validado.
+
+## TICK-308 — Indicador de stock bajo no advertía con pocas unidades
+
+**Síntoma:** El panel mostraba el indicador verde de "en stock" incluso cuando un producto tenía únicamente 1 o 2 unidades disponibles.
+**Causa raíz:** La condición visual consideraba cualquier stock mayor que cero como stock normal.
+**Corrección:** Se ajustó el indicador para mostrar estado de advertencia cuando el stock es menor o igual a 2 unidades.
+**Validación:** Con `2` unidades el indicador se mostró en naranja y con `3` unidades volvió a mostrarse en verde.
+**Resultado:** El panel ahora diferencia visualmente entre stock bajo y stock normal.
+**Regresión:** Los productos con 3 o más unidades continúan mostrándose como stock disponible normal.
+**Estado:** Resuelto y validado.

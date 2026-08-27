@@ -23,8 +23,8 @@ export function BuscadorProductos() {
   const [buscado, setBuscado] = useState(false);
   const [cargando, setCargando] = useState(false);
 
-  // Búsqueda "mientras escribes": se dispara con cada cambio del término para
-  // que los resultados se sientan instantáneos.
+// La búsqueda se ejecuta después de una breve pausa al escribir.
+// Esto evita enviar una solicitud por cada tecla.
 useEffect(() => {
   if (!termino.trim()) {
     setResultados([]);
@@ -112,7 +112,7 @@ useEffect(() => {
                       {formatearMoneda(p.Precio)}
                     </p>
                   </div>
-                  <Badge variant={p.Stock > 0 ? "success" : "warning"}>
+                  <Badge variant={p.Stock <= 2 ? "warning" : "success"}>
                     {p.Stock} en stock
                   </Badge>
                 </div>
