@@ -153,4 +153,16 @@ Escalamiento: Backend / frontend.
 **Regresión:** Se mantiene la validación del flujo cuando el cliente no tiene email.
 **Estado:** Resuelto y validado.
 
+## TICK-204 — Reporte lento
+
+**Síntoma:** El reporte podía volverse lento con gran cantidad de pedidos.
+**Evidencia:** Se detectó un patrón N+1 al consultar líneas y clientes dentro de un ciclo.
+**Causa raíz:** Consultas adicionales por cada pedido.
+**Corrección:** Se reemplazó el procesamiento por una consulta LINQ que genera JOIN y agregación en SQL.
+**Validación:** El endpoint devolvió correctamente los pedidos, clientes, cantidades y totales.
+**Resultado:** Los logs muestran una consulta combinada para el reporte en lugar de consultas repetidas por pedido.
+**Tests:** `Superado: 3`, `Con error: 0`, `Omitido: 2`.
+**API:** Validada después de reconstruir Docker.
+**Resultado final:** El reporte mantiene la información correcta y reduce las consultas innecesarias.
+**Estado:** Resuelto y validado.
 

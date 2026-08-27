@@ -22,29 +22,33 @@ public class ReporteService
 
     // Genera el reporte de ventas de un rango de fechas.
     // En producción la tabla Pedidos tiene cientos de miles de filas.
-    public List<FilaReporte> GenerarReporteVentas(DateTime desdeUtc, DateTime hastaUtc)
+
+    // Se genera el reporte en una sola consulta para evitar N+1.
+    public List<FilaReporte> GenerarReporteVentas(
+        DateTime desdeUtc,
+        DateTime hastaUtc)
     {
-        var pedidos = _db.Pedidos
-            .Where(p => p.FechaUtc >= desdeUtc && p.FechaUtc <= hastaUtc)
-            .ToList();
+        var reporte = from pedido in _db.Pedidos
+                      where pedido.FechaUtc >= desdeUtc &&
+                            pedido.FechaUtc <= hastaUtc
+                      join cliente in _db.Clientes
+                          on pedido.ClienteId equals cliente.Id
+                          into clientes
+                      from cliente in clientes.DefaultIfEmpty()
+                      join linea in _db.LineasPedido
+                          on pedido.Id equals linea.PedidoId
+                          into lineas
+                      select new FilaReporte
+                      {
+                          PedidoId = pedido.Id,
+                          Cliente = cliente != null
+                              ? cliente.Nombre
+                              : "(desconocido)",
+                          CantidadArticulos = lineas
+                              .Sum(l => (int?)l.Cantidad) ?? 0,
+                          Total = pedido.Total
+                      };
 
-        var filas = new List<FilaReporte>();
-        foreach (var pedido in pedidos)
-        {
-            // Por cada pedido se vuelve a la base de datos a traer sus líneas
-            // y el nombre del cliente.
-            var lineas = _db.LineasPedido.Where(l => l.PedidoId == pedido.Id).ToList();
-            var cliente = _db.Clientes.FirstOrDefault(c => c.Id == pedido.ClienteId);
-
-            filas.Add(new FilaReporte
-            {
-                PedidoId = pedido.Id,
-                Cliente = cliente?.Nombre ?? "(desconocido)",
-                CantidadArticulos = lineas.Sum(l => l.Cantidad),
-                Total = pedido.Total
-            });
-        }
-
-        return filas;
+        return reporte.ToList();
     }
 }
