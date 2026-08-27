@@ -191,3 +191,15 @@ Escalamiento: Backend / frontend.
 **Resultado:** El payload `' OR 1=1 --` no devuelve todo el catálogo.
 **Tests:** `Superado: 5`, `Con error: 0`, `Omitido: 0`.
 **Estado:** Resuelto y validado.
+
+## TICK-301 corregir comportamiento inseguro del buscador
+**Síntoma:** El buscador ejecutaba contenido HTML/JavaScript ingresado por el usuario.
+**Evidencia:** El payload `<img src=x onerror=alert('XSS')>` ejecutó una alerta.
+**Causa raíz:** Uso de `dangerouslySetInnerHTML` con datos controlados por el usuario.
+**Corrección:** Se reemplazó por renderizado normal de JSX.
+**Cambio:** El término y `p.Nombre` ahora se muestran como texto.
+**Validación:** Se reconstruyó el frontend y se repitió el mismo payload.
+**Resultado:** El contenido se mostró literalmente y no se ejecutó JavaScript.
+**Impacto:** Se elimina el riesgo de XSS reflejado en este componente.
+**Regresión:** La funcionalidad del buscador continúa operativa.
+**Estado:** Resuelto y validado.
