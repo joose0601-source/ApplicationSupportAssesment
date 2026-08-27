@@ -16,5 +16,9 @@ public interface ITiendaDbContext
     DbSet<Pedido> Pedidos { get; }
     DbSet<LineaPedido> LineasPedido { get; }
 
+
     int SaveChanges();
+
+    bool DescontarStock(int productoId, int cantidad);
+
 }

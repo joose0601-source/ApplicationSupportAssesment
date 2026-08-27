@@ -16,16 +16,31 @@ public class InventarioService
     // Este método es invocado al confirmar cada pedido.
     public void DescontarStock(int productoId, int cantidad)
     {
-        var producto = _db.Productos.FirstOrDefault(p => p.Id == productoId);
-        if (producto == null)
-            throw new InvalidOperationException($"Producto {productoId} no existe.");
+        if (cantidad <= 0)
+        {
+            throw new ArgumentException(
+                "La cantidad debe ser mayor que cero.");
+        }
 
-        // Se lee el stock, se valida y luego se actualiza.
-        if (producto.Stock < cantidad)
+        // se busca el producto para validar que exista.
+        var producto = _db.Productos
+            .FirstOrDefault(p => p.Id == productoId);
+
+        if (producto == null)
+        {
+            throw new InvalidOperationException(
+                $"Producto {productoId} no existe.");
+        }
+
+        // El descuento se hace de forma atómica en la BD.
+        var actualizado = _db.DescontarStock(
+            productoId,
+            cantidad);
+
+        if (!actualizado)
+        {
             throw new InvalidOperationException(
                 $"Stock insuficiente para el producto {producto.Nombre}.");
-
-        producto.Stock = producto.Stock - cantidad;
-        _db.SaveChanges();
+        }
     }
 }
