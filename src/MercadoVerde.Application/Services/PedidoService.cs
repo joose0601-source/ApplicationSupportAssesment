@@ -54,26 +54,43 @@ public class PedidoService
 
         // 2) Aplicar cupón (si viene)
         decimal descuento = 0m;
+
         if (!string.IsNullOrWhiteSpace(dto.CodigoCupon))
         {
-            var cupon = _db.Cupones.FirstOrDefault(c => c.Codigo == dto.CodigoCupon);
+            var cupon = _db.Cupones
+                .FirstOrDefault(c => c.Codigo == dto.CodigoCupon);
 
-            // Validar vigencia del cupón
-            if (cupon.FechaExpiracionUtc >= DateTime.Now && cupon.Activo)
+            if (cupon != null &&
+                cupon.FechaExpiracionUtc >= DateTime.UtcNow &&
+                cupon.Activo)
             {
-                descuento = subtotal * (cupon.PorcentajeDescuento / 100m);
+                descuento = Math.Round(
+                    subtotal * (cupon.PorcentajeDescuento / 100m),
+                    2,
+                    MidpointRounding.AwayFromZero
+                );
             }
         }
 
         // 3) Calcular impuesto y total
-        decimal impuesto = subtotal * TasaImpuesto;
-        decimal total = subtotal - descuento + impuesto;
+        decimal baseImponible = subtotal - descuento;
+
+        decimal impuesto = Math.Round(
+            baseImponible * TasaImpuesto,
+            2,
+            MidpointRounding.AwayFromZero
+        );
+
+        decimal total = Math.Round(
+            baseImponible + impuesto,
+            2,
+            MidpointRounding.AwayFromZero
+        );
 
         pedido.Subtotal = subtotal;
         pedido.Descuento = descuento;
         pedido.Impuesto = impuesto;
         pedido.Total = total;
-
         // 4) Cobrar con la pasarela de pago
         try
         {
