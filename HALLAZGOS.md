@@ -256,3 +256,15 @@ Escalamiento: Backend / frontend.
 **Resultado:** El reporte incluyó los pedidos registrados durante todo el 27 de agosto.
 **Regresión:** Se mantiene el filtrado por rango sin alterar los datos reportados.
 **Estado:** Resuelto y validado.
+
+## TICK-307 — Buscador dispara consultas mientras se escribe
+
+**Síntoma:** Al escribir rápidamente en el buscador se generaban múltiples consultas y existía riesgo de mostrar resultados de búsquedas anteriores.
+**Evidencia:** Antes de la corrección, Network mostró múltiples solicitudes al endpoint de búsqueda durante una misma interacción.
+**Causa raíz:** El `useEffect` ejecutaba `buscarProductos()` en cada cambio del término, sin debounce ni control de respuestas obsoletas.
+**Corrección:** Se agregó un debounce de 300 ms y una bandera de vigencia para ignorar respuestas de búsquedas anteriores.
+**Validación:** Con `Slow 4G`, después de limpiar Network y escribir rápidamente `teclado`, se observó una única petición `buscar?termino=teclado`.
+**Resultado:** Se redujeron las consultas innecesarias y solo la búsqueda vigente puede actualizar los resultados.
+**Comportamiento esperado:** El panel debe esperar brevemente después de que el usuario deje de escribir y mostrar únicamente los resultados correspondientes al término actual.
+**Regresión:** El buscador continúa mostrando correctamente los productos encontrados y conserva la búsqueda manual mediante Enter o botón.
+**Estado:** Resuelto y validado.

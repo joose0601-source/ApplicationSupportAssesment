@@ -25,27 +25,51 @@ export function BuscadorProductos() {
 
   // Búsqueda "mientras escribes": se dispara con cada cambio del término para
   // que los resultados se sientan instantáneos.
-  useEffect(() => {
-    if (!termino) {
-      setResultados([]);
-      setBuscado(false);
-      return;
-    }
-    setCargando(true);
-    buscarProductos(termino).then((productos) => {
-      setResultados(productos);
-      setBuscado(true);
-      setCargando(false);
-    });
-  }, [termino]);
+useEffect(() => {
+  if (!termino.trim()) {
+    setResultados([]);
+    setBuscado(false);
+    return;
+  }
 
-  async function ejecutarBusqueda() {
+  let activa = true;
+
+  const temporizador = setTimeout(async () => {
     setCargando(true);
+
+    try {
+      const productos = await buscarProductos(termino);
+
+      if (activa) {
+        setResultados(productos);
+        setBuscado(true);
+      }
+    } finally {
+      if (activa) {
+        setCargando(false);
+      }
+    }
+  }, 300);
+
+  return () => {
+    activa = false;
+    clearTimeout(temporizador);
+  };
+}, [termino]);
+
+ async function ejecutarBusqueda() {
+  if (!termino.trim() || cargando) return;
+
+  setCargando(true);
+
+  try {
     const productos = await buscarProductos(termino);
     setResultados(productos);
     setBuscado(true);
+  } finally {
     setCargando(false);
   }
+}
 
   return (
     <Card>
