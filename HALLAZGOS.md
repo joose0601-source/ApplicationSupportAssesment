@@ -203,3 +203,14 @@ Escalamiento: Backend / frontend.
 **Impacto:** Se elimina el riesgo de XSS reflejado en este componente.
 **Regresión:** La funcionalidad del buscador continúa operativa.
 **Estado:** Resuelto y validado.
+
+## TICK-302 — Diferencia entre monto estimado y cobrado
+
+**Síntoma:** El panel mostraba un total diferente al cobro real.
+**Evidencia:** Con Teclado Mecánico y 10% de descuento, el panel mostraba $51.40 y la API $50.75.
+**Causa raíz:** El frontend calculaba el impuesto sobre el subtotal antes del descuento.
+**Corrección:** Se calculó primero el descuento, luego la base imponible y finalmente el impuesto.
+**Validación:** Se reconstruyó el frontend y se repitió el mismo escenario.
+**Resultado:** El total estimado y el total cobrado ahora coinciden en $50.75.
+**Regresión:** Se mantuvo el formato monetario a dos decimales.
+**Estado:** Resuelto y validado.

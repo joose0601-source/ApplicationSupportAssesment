@@ -20,16 +20,24 @@ export function calcularSubtotal(lineas: LineaResumen[]): number {
   return subtotal;
 }
 
-// Calcula el total estimado a cobrar.
-// porcentajeCupon llega como número 0..100 (ej. 10 para 10%).
+// Se mantiene el mismo cálculo y redondeo que el backend.
 export function calcularTotalEstimado(
   lineas: LineaResumen[],
   porcentajeCupon: number
 ): number {
   const subtotal = calcularSubtotal(lineas);
-  const impuesto = subtotal * TASA_IMPUESTO;
-  const descuento = subtotal * (porcentajeCupon / 100);
-  return subtotal + impuesto - descuento;
+
+  const descuento = Number(
+    (subtotal * (porcentajeCupon / 100)).toFixed(2)
+  );
+
+  const baseImponible = subtotal - descuento;
+
+  const impuesto = Number(
+    (baseImponible * TASA_IMPUESTO).toFixed(2)
+  );
+
+  return Number((baseImponible + impuesto).toFixed(2));
 }
 
 // Formatea un monto para mostrarlo en la interfaz.
