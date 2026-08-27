@@ -68,7 +68,11 @@ const enviandoRef = useRef(false);
     lineas,
     Number(porcentajeCupon)
   );
-
+const cantidadesValidas =
+  lineas.length > 0 &&
+  lineas.every(
+    (l) => Number.isInteger(l.cantidad) && l.cantidad > 0
+  );
 async function enviar() {
   if (enviandoRef.current) return;
 
@@ -160,17 +164,20 @@ async function enviar() {
                 </div>
                 <div className="w-24 space-y-1">
                   <span className="text-xs text-muted-foreground">Cantidad</span>
-                  <Input
-                    type="number"
-                    value={linea.cantidad}
-                    onChange={(e) =>
-                      actualizarLinea(
-                        index,
-                        linea.productoId,
-                        parseInt(e.target.value)
-                      )
-                    }
-                  />
+             <Input
+  type="number"
+  min={1}
+  value={linea.cantidad}
+  onChange={(e) => {
+    const cantidad = Number(e.target.value);
+
+    actualizarLinea(
+      index,
+      linea.productoId,
+      Number.isFinite(cantidad) ? cantidad : 0
+    );
+  }}
+/>
                 </div>
                 <div className="w-28 pb-2 text-right text-sm">
                   {linea.precioUnitario * linea.cantidad}
@@ -202,10 +209,12 @@ async function enviar() {
             </div>
           </div>
 
-<Button onClick={enviar} disabled={enviando}>
+<Button
+  onClick={enviar}
+  disabled={enviando || !cantidadesValidas}
+>
   {enviando ? "Procesando..." : "Confirmar y cobrar pedido"}
 </Button>
-
 {error && (
   <p className="text-sm text-destructive">
     {error}

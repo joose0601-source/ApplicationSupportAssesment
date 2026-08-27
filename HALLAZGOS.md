@@ -278,3 +278,13 @@ Escalamiento: Backend / frontend.
 **Resultado:** El panel ahora diferencia visualmente entre stock bajo y stock normal.
 **Regresión:** Los productos con 3 o más unidades continúan mostrándose como stock disponible normal.
 **Estado:** Resuelto y validado.
+
+## TICK-309 — El formulario permite cantidades inválidas
+
+**Síntoma:** El formulario permitía capturar cantidades inválidas como `0`, y el usuario podía intentar confirmar el pedido con valores que no tienen sentido.
+**Causa raíz:** El campo de cantidad no tenía una validación mínima en el frontend y el botón de confirmación no dependía de que todas las cantidades fueran válidas.
+**Corrección:** Se agregó `min={1}` al campo de cantidad y una validación que exige cantidades enteras mayores que cero antes de habilitar la confirmación.
+**Validación:** Con cantidad `0` el botón quedó deshabilitado y con cantidad `1` volvió a habilitarse.
+**Resultado:** El panel impide confirmar pedidos con cantidades inválidas desde la interfaz.
+**Regresión:** Las cantidades enteras positivas continúan permitiendo crear pedidos normalmente.
+**Estado:** Resuelto y validado.
