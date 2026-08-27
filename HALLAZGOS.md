@@ -236,3 +236,13 @@ Escalamiento: Backend / frontend.
 **Comportamiento esperado:** Con volúmenes mayores, el navegador renderiza como máximo 50 filas por página.
 **Regresión:** No se modificó el cálculo ni los datos del reporte.
 **Estado:** Resuelto y validado.
+
+## TICK-305 — Manejo incorrecto de errores en pedidos
+
+**Síntoma:** Al fallar un pedido, el panel no mostraba información clara al usuario.
+**Evidencia:** Con stock insuficiente, la operación fallaba sin mensaje visible.
+**Causa raíz:** El frontend no verificaba correctamente respuestas HTTP fallidas.
+**Corrección:** Se validó `res.ok` y se agregó manejo de errores en el formulario.
+**Validación:** Se probó un pedido con stock insuficiente.
+**Resultado:** El pedido fallido ya no se muestra como exitoso y aparece un mensaje de error.
+**Estado:** Resuelto y validado.

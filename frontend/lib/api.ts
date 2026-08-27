@@ -17,16 +17,19 @@ export async function buscarProductos(termino: string): Promise<Producto[]> {
     return [];
   }
 }
-
 export async function crearPedido(dto: CrearPedidoDto): Promise<Pedido> {
   const res = await fetch(`${API_BASE}/api/pedidos`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(dto),
   });
+
+  if (!res.ok) {
+    throw new Error(`No se pudo crear el pedido (${res.status}).`);
+  }
+
   return (await res.json()) as Pedido;
 }
-
 export async function obtenerReporteVentas(
   desde: string,
   hasta: string

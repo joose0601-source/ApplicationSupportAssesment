@@ -42,6 +42,9 @@ export function CrearPedidoForm() {
   ]);
   const [pedido, setPedido] = useState<Pedido | null>(null);
   const [enviando, setEnviando] = useState(false);
+
+const [error, setError] = useState("");
+
 const enviandoRef = useRef(false);
   function agregarLinea() {
     setLineas([...lineas, { productoId: 1, cantidad: 1, precioUnitario: 25.0 }]);
@@ -71,6 +74,7 @@ async function enviar() {
 
   enviandoRef.current = true;
   setEnviando(true);
+  setError("");
 
   try {
     const creado = await crearPedido({
@@ -83,7 +87,10 @@ async function enviar() {
     });
 
     setPedido(creado);
-  } finally {
+} catch {
+  setPedido(null);
+  setError("No se pudo completar el pedido. Verifica el stock o intenta nuevamente.");
+} finally {
     enviandoRef.current = false;
     setEnviando(false);
   }
@@ -195,9 +202,16 @@ async function enviar() {
             </div>
           </div>
 
-       <Button onClick={enviar} disabled={enviando}>
+<Button onClick={enviar} disabled={enviando}>
   {enviando ? "Procesando..." : "Confirmar y cobrar pedido"}
 </Button>
+
+{error && (
+  <p className="text-sm text-destructive">
+    {error}
+  </p>
+)}
+
         </CardContent>
       </Card>
 
