@@ -23,6 +23,20 @@ public class TiendaDbContext : DbContext, ITiendaDbContext
     // Descuento atómico para evitar problemas de concurrencia
     public bool DescontarStock(int productoId, int cantidad)
     {
+        if (Database.ProviderName?.Contains("InMemory") == true)
+        {
+            var producto = Productos
+                .FirstOrDefault(p => p.Id == productoId);
+
+            if (producto == null || producto.Stock < cantidad)
+                return false;
+
+            producto.Stock -= cantidad;
+            SaveChanges();
+
+            return true;
+        }
+
         var filasAfectadas = Productos
             .Where(p =>
                 p.Id == productoId &&

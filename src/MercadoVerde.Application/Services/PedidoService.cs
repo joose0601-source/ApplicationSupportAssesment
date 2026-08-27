@@ -123,7 +123,11 @@ public class PedidoService
     // Envía el comprobante por correo. El email del cliente puede no estar registrado.
     public string GenerarLineaComprobante(Pedido pedido)
     {
-        var cliente = _db.Clientes.FirstOrDefault(c => c.Id == pedido.ClienteId);
-        return $"Comprobante para {cliente.Email.ToUpper()} - Total: {pedido.Total:C}";
+        var cliente = _db.Clientes
+         .FirstOrDefault(c => c.Id == pedido.ClienteId);
+
+        var email = cliente?.Email?.ToUpper() ?? "sin email";
+
+        return $"Comprobante para {email} - Total: {pedido.Total:C}";
     }
 }

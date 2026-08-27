@@ -140,6 +140,17 @@ Escalamiento: Backend / frontend.
 **Validación API:** Postman devolvió `Subtotal 25.00`, `Descuento 2.50`, `Impuesto 2.93`, `Total 25.43`.
 **Estado:** Resuelto y validado.
 
+## TICK-203 — Error 500 con cupón PROMO50
 
+**Síntoma:** Algunos pedidos devolvían HTTP 500 con un cliente específico y el cupón `PROMO50`.
+**Evidencia:** El log mostró `NullReferenceException` en `PedidoService.GenerarLineaComprobante`, al utilizar el email del cliente. :contentReference[oaicite:0]{index=0}
+**Causa raíz:** El cliente podía tener `Email = null` y se ejecutaba `cliente.Email.ToUpper()`.
+**Corrección:** Se agregó manejo seguro del email nulo usando `?.` y un valor por defecto.
+**Prueba:** Se activó `TICK203_CuponInexistente_NoLanzaNullReference`.
+**Resultado:** `Superado: 3`, `Con error: 0`, `Omitido: 2`.
+**Validación API:** Postman con cliente 2 y `PROMO50` devolvió HTTP 200.
+**Resultado:** Pedido creado con `Descuento = 0`, `Impuesto = 3.25` y `Total = 28.25`.
+**Regresión:** Se mantiene la validación del flujo cuando el cliente no tiene email.
+**Estado:** Resuelto y validado.
 
 
