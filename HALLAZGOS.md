@@ -214,3 +214,13 @@ Escalamiento: Backend / frontend.
 **Resultado:** El total estimado y el total cobrado ahora coinciden en $50.75.
 **Regresión:** Se mantuvo el formato monetario a dos decimales.
 **Estado:** Resuelto y validado.
+
+## TICK-303 — Pedidos duplicados por doble clic
+
+**Síntoma:** Una acción repetida podía generar pedidos duplicados.
+**Evidencia:** La prueba inicial generó dos pedidos con pocos milisegundos de diferencia.
+**Causa raíz:** El formulario no bloqueaba inmediatamente una segunda ejecución.
+**Corrección:** Se agregó un bloqueo con `useRef` y se deshabilitó el botón durante el envío.
+**Validación:** Con doble clic rápido se observó una sola petición `POST /api/pedidos` en Network.
+**Resultado:** La segunda acción no genera otra solicitud mientras el primer envío está en proceso.
+**Estado:** Resuelto y validado.

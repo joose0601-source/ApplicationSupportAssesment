@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
 
 import { crearPedido } from "@/lib/api";
@@ -42,7 +42,7 @@ export function CrearPedidoForm() {
   ]);
   const [pedido, setPedido] = useState<Pedido | null>(null);
   const [enviando, setEnviando] = useState(false);
-
+const enviandoRef = useRef(false);
   function agregarLinea() {
     setLineas([...lineas, { productoId: 1, cantidad: 1, precioUnitario: 25.0 }]);
   }
@@ -66,8 +66,13 @@ export function CrearPedidoForm() {
     Number(porcentajeCupon)
   );
 
-  async function enviar() {
-    setEnviando(true);
+async function enviar() {
+  if (enviandoRef.current) return;
+
+  enviandoRef.current = true;
+  setEnviando(true);
+
+  try {
     const creado = await crearPedido({
       ClienteId: Number(clienteId),
       CodigoCupon: codigoCupon || null,
@@ -76,10 +81,13 @@ export function CrearPedidoForm() {
         Cantidad: l.cantidad,
       })),
     });
+
     setPedido(creado);
+  } finally {
+    enviandoRef.current = false;
     setEnviando(false);
   }
-
+}
   return (
     <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
       <Card>
@@ -187,7 +195,9 @@ export function CrearPedidoForm() {
             </div>
           </div>
 
-          <Button onClick={enviar}>Confirmar y cobrar pedido</Button>
+       <Button onClick={enviar} disabled={enviando}>
+  {enviando ? "Procesando..." : "Confirmar y cobrar pedido"}
+</Button>
         </CardContent>
       </Card>
 
