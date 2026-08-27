@@ -224,3 +224,15 @@ Escalamiento: Backend / frontend.
 **Validación:** Con doble clic rápido se observó una sola petición `POST /api/pedidos` en Network.
 **Resultado:** La segunda acción no genera otra solicitud mientras el primer envío está en proceso.
 **Estado:** Resuelto y validado.
+
+## TICK-304 — Reporte pesado en el panel
+
+**Síntoma:** El reporte puede afectar el rendimiento del navegador al mostrar muchos registros.
+**Evidencia:** El componente renderizaba todas las filas recibidas mediante `filas.map(...)`.
+**Causa raíz:** No existía paginación en la presentación del reporte.
+**Corrección:** Se agregó paginación de 50 registros por página.
+**Validación:** El reporte continúa mostrando los 22 pedidos existentes y el total general de $1153.75.
+**Resultado:** Con los datos actuales se muestran 22 de 22 registros en una sola página.
+**Comportamiento esperado:** Con volúmenes mayores, el navegador renderiza como máximo 50 filas por página.
+**Regresión:** No se modificó el cálculo ni los datos del reporte.
+**Estado:** Resuelto y validado.

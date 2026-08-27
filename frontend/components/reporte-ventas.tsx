@@ -29,17 +29,26 @@ export function ReporteVentas() {
   const [hasta, setHasta] = useState("2026-06-02");
   const [filas, setFilas] = useState<FilaReporte[]>([]);
   const [cargando, setCargando] = useState(false);
+  const [pagina, setPagina] = useState(1);
+
+const FILAS_POR_PAGINA = 50;
 
   async function generar() {
     setCargando(true);
     const data = await obtenerReporteVentas(desde, hasta);
-    setFilas(data);
+  setFilas(data);
+setPagina(1);
     setCargando(false);
   }
 
   // Total general de todas las ventas del rango.
   const totalGeneral = filas.reduce((acc, f) => acc + f.Total, 0);
+const totalPaginas = Math.ceil(filas.length / FILAS_POR_PAGINA);
 
+const filasPagina = filas.slice(
+  (pagina - 1) * FILAS_POR_PAGINA,
+  pagina * FILAS_POR_PAGINA
+);
   return (
     <Card>
       <CardHeader>
@@ -95,9 +104,9 @@ export function ReporteVentas() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filas.map((fila, index) => (
-                  <TableRow key={index}>
-                    <TableCell className="font-medium">{fila.PedidoId}</TableCell>
+                {filasPagina.map((fila) => (
+                     <TableRow key={fila.PedidoId}>
+                      <TableCell className="font-medium">{fila.PedidoId}</TableCell>
                     <TableCell>{fila.Cliente}</TableCell>
                     <TableCell className="text-right">
                       {fila.CantidadArticulos}
@@ -109,6 +118,35 @@ export function ReporteVentas() {
                 ))}
               </TableBody>
             </Table>
+            <div className="flex items-center justify-between">
+  <span className="text-sm text-muted-foreground">
+    Mostrando {filasPagina.length} de {filas.length} pedidos
+  </span>
+
+  <div className="flex gap-2">
+    <Button
+      variant="outline"
+      size="sm"
+      onClick={() => setPagina((p) => p - 1)}
+      disabled={pagina === 1}
+    >
+      Anterior
+    </Button>
+
+    <span className="flex items-center px-2 text-sm">
+      Página {pagina} de {totalPaginas}
+    </span>
+
+    <Button
+      variant="outline"
+      size="sm"
+      onClick={() => setPagina((p) => p + 1)}
+      disabled={pagina === totalPaginas}
+    >
+      Siguiente
+    </Button>
+  </div>
+</div>
           </>
         )}
       </CardContent>
