@@ -30,7 +30,7 @@ public class ReporteService
     {
         var reporte = from pedido in _db.Pedidos
                       where pedido.FechaUtc >= desdeUtc &&
-                            pedido.FechaUtc <= hastaUtc
+                            pedido.FechaUtc < hastaUtc
                       join cliente in _db.Clientes
                           on pedido.ClienteId equals cliente.Id
                           into clientes

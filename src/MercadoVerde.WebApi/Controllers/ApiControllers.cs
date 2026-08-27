@@ -48,6 +48,9 @@ public class ReportesController : ControllerBase
     [HttpGet("ventas")]
     public IActionResult Ventas([FromQuery] DateTime desde, [FromQuery] DateTime hasta)
     {
-        return Ok(_reportes.GenerarReporteVentas(desde, hasta));
+        var desdeUtc = desde.Date;
+        var hastaUtc = hasta.Date.AddDays(1);
+
+        return Ok(_reportes.GenerarReporteVentas(desdeUtc, hastaUtc));
     }
 }

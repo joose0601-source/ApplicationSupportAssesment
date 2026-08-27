@@ -246,3 +246,13 @@ Escalamiento: Backend / frontend.
 **Validación:** Se probó un pedido con stock insuficiente.
 **Resultado:** El pedido fallido ya no se muestra como exitoso y aparece un mensaje de error.
 **Estado:** Resuelto y validado.
+
+## TICK-306 — Rango de fechas excluye registros del día final
+
+**Síntoma:** El reporte podía omitir pedidos realizados durante el día indicado en la fecha final.
+**Causa raíz:** El límite superior se comparaba de forma inclusiva contra una fecha con hora 00:00.
+**Corrección:** Se usa el límite superior exclusivo del día siguiente.
+**Validación:** Se consultó desde `2026-08-27` hasta `2026-08-27`.
+**Resultado:** El reporte incluyó los pedidos registrados durante todo el 27 de agosto.
+**Regresión:** Se mantiene el filtrado por rango sin alterar los datos reportados.
+**Estado:** Resuelto y validado.
