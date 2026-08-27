@@ -178,3 +178,16 @@ Escalamiento: Backend / frontend.
 **Comportamiento esperado:** Un fallo de la pasarela nunca debe marcar el pedido como `Pagado`.
 **Regresión:** Los tests de TICK-202 y TICK-203 continúan pasando.
 **Estado:** Resuelto y validado.
+
+## TICK-206 — Inyección SQL en buscador
+
+**Síntoma:** La búsqueda podía fallar con caracteres especiales y ser vulnerable a inyección SQL.
+**Evidencia:** El test falló con `x'` debido a una `SqliteException` en `ProductoRepository.BuscarPorNombre`.
+**Causa raíz:** El término recibido del usuario se concatenaba directamente en la consulta SQL.
+**Corrección:** Se eliminó el SQL concatenado y se utilizó LINQ con `EF.Functions.Like`.
+**Prueba:** Se activó `TICK206_Buscador_NoPermiteInyeccionNiRompeConComilla`.
+**Validación:** Se probaron entradas con comilla e intento de inyección SQL.
+**Resultado:** La búsqueda ya no rompe con `x'`.
+**Resultado:** El payload `' OR 1=1 --` no devuelve todo el catálogo.
+**Tests:** `Superado: 5`, `Con error: 0`, `Omitido: 0`.
+**Estado:** Resuelto y validado.

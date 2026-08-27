@@ -15,13 +15,18 @@ public class ProductoRepository : IProductoRepository
     }
 
     // Búsqueda de productos por nombre para el catálogo público.
-    // El término de búsqueda llega directamente desde la query string del usuario.
     public List<Producto> BuscarPorNombre(string termino)
     {
-        // Se arma la consulta SQL concatenando el texto recibido del usuario.
-        // (Búsqueda sin distinguir mayúsculas/minúsculas, como el catálogo público.)
-        var sql = "SELECT * FROM \"Productos\" WHERE \"Activo\" = true AND LOWER(\"Nombre\") LIKE '%" + termino.ToLower() + "%'";
-        return _db.Productos.FromSqlRaw(sql).ToList();
+        // Busco por nombre sin concatenar SQL del usuario.
+
+        var texto = termino?.ToLowerInvariant() ?? string.Empty;
+        var patron = $"%{texto}%";
+
+        return _db.Productos
+            .Where(p =>
+                p.Activo &&
+                EF.Functions.Like(p.Nombre.ToLower(), patron))
+            .ToList();
     }
 
     public Producto? ObtenerPorId(int id) => _db.Productos.FirstOrDefault(p => p.Id == id);
